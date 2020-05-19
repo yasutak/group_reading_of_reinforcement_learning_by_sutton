@@ -25,7 +25,7 @@
 ### other reinforcement learning courses
 
 [RL Courses by David Silver](https://www.youtube.com/watch?v=2pWv7GOvuf0&list=PLqYmG7hTraZDM-OYHWgPebj2MfCFzFObQ)
-David Silver is one of the masterminds of AlphaGo. This course is also based on our textbook.
+>David Silver is one of the masterminds of AlphaGo. This course is also based on our textbook.
 
 - [class notes](https://www.davidsilver.uk/teaching/)
 - [python codes](https://github.com/dalmia/David-Silver-Reinforcement-learning)
