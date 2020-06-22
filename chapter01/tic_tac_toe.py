@@ -198,7 +198,7 @@ class Player:
     won. Similarly, for all states with three Os in a row, or that are filled 
     up, the correct probability is 0, as we cannot win from them. 
     We set the initial values of all the other states to 0.5, representing 
-    a guess that we have a 50% chance of winning.(p9)
+    a guess that we have a 50% chance of winning.(intro to RL by Sutton p9)
     """
     def set_symbol(self, symbol):
         self.symbol = symbol
@@ -221,7 +221,7 @@ class Player:
 
         for i in reversed(range(len(states) - 1)):
             state = states[i]
-            td_error = self.greedy[i] * (
+            td_error = self.greedy[i] * ( # greedy consists of True or False(exploratory)
                 self.estimations[states[i + 1]] - self.estimations[state]
             )
             self.estimations[state] += self.step_size * td_error
@@ -255,8 +255,11 @@ class Player:
         for hash_val, pos in zip(next_states, next_positions):
             values.append((self.estimations[hash_val], pos))
         # to select one of the actions of equal value at random due to Python's sort is stable
+        # ref. "Sorts are guaranteed to be stable. That means that when 
+        # multiple records have the same key, their original order is preserved.""
+        # https://docs.python.org/3/howto/sorting.html#sortinghowto
         np.random.shuffle(values)
-        values.sort(key=lambda x: x[0], reverse=True)
+        values.sort(key=lambda x: x[0], reverse=True) # the largest, the first
         action = values[0][1]
         action.append(self.symbol)
         return action
@@ -279,6 +282,7 @@ p1.set_symbol(1)
 # %%
 p1.estimations
 
+# %%
 class Judger:
     # @player1: the player who will move first, its chessman will be 1
     # @player2: another player with a chessman -1
@@ -327,8 +331,7 @@ p1 = Player()
 p2 = Player()
 judger = Judger(p1, p2)
 judger.play(print_state=True)
-
-# %% 
+# %%
 
 
 # %%
@@ -380,8 +383,12 @@ def train(epochs, print_every_n=500):
     player1.save_policy()
     player2.save_policy()
 
+# %%
+train(500)
+
+# %%
 def compete(turns):
-    player1 = Player(epsilon=0.2)
+    player1 = Player(epsilon=0)
     player2 = Player(epsilon=0)
     judger = Judger(player1, player2)
     player1.load_policy()
@@ -389,13 +396,16 @@ def compete(turns):
     player1_win = 0.0
     player2_win = 0.0
     for _ in range(turns):
-        winner = Judger.play()
+        winner = judger.play(print_state=False)
         if winner == 1:
             player1_win += 1
         if winner == -1:
             player2_win += 1
         judger.reset()
     print('%d turns, player 1 win %02f, player 2 win %.02f' % (turns, player1_win / turns, player2_win / turns))
+
+# %%
+compete(int(500))
 
 # %%
 # The game is a zero sum game. If both players are playing with an optimal strategy, every game will end in a tie. 
@@ -415,7 +425,6 @@ def play():
             print("It is a tie!")
 
 # %%
-if __name__ == '__main__':
-    train(int(1e5))
-    compete(int(1e3))
-    play()
+train(int(1e4))
+compete(int(1e3))
+play()
