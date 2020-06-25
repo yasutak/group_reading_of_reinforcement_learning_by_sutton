@@ -9,9 +9,9 @@
 #       format_version: '1.3'
 #       jupytext_version: 1.5.0
 #   kernelspec:
-#     display_name: xpython
+#     display_name: Python 3
 #     language: python
-#     name: xpython
+#     name: python3
 # ---
 
 # %%
@@ -28,6 +28,7 @@
 # %%
 import numpy as np
 import pickle 
+import pprint as pp
 
 BOARD_ROWS = 3
 BOARD_COLS = 3
@@ -155,6 +156,8 @@ s_new = s.next_state(0, 0, 1)
 s_new.print_state()
 
 # %%
+s_new.is_end()
+# %%
 all_states
 
 # %%
@@ -169,6 +172,8 @@ all_states[14764]
 # %%
 all_states[14764][0].print_state()
 
+# %%
+len(all_states)
 
 # %%
 # AI player
@@ -192,6 +197,7 @@ class Player:
         self.greedy.append(True)
 
     #set up initial values
+    #@init_est: the initial probablity of winning for tie
     """
     Assuming we always play Xs, then for all states with three Xs
     in a row the probability of winning is 1, because we have already 
@@ -200,7 +206,7 @@ class Player:
     We set the initial values of all the other states to 0.5, representing 
     a guess that we have a 50% chance of winning.(intro to RL by Sutton p9)
     """
-    def set_symbol(self, symbol):
+    def set_symbol(self, symbol, init_est=0.5):
         self.symbol = symbol
         for hash_val in all_states:
             state, is_end = all_states[hash_val]
@@ -209,21 +215,26 @@ class Player:
                     self.estimations[hash_val] = 1.0
                 elif state.winner == 0:
                     # we need to distinguish between a tie and a lose
-                    self.estimations[hash_val] = 0.5
+                    self.estimations[hash_val] = init_est
                 else:
                     self.estimations[hash_val] = 0
             else:
                 self.estimations[hash_val] = 0.5
         
     # update value estimation
-    def backup(self):
+    # @exp_included: include exploratory moves in learning
+    def backup(self, exp_included=False):
         states = [state.hash() for state in self.states]
 
         for i in reversed(range(len(states) - 1)):
             state = states[i]
-            td_error = self.greedy[i] * ( # greedy consists of True or False(exploratory)
-                self.estimations[states[i + 1]] - self.estimations[state]
-            )
+
+            if not exp_included:
+                td_error = self.greedy[i] * ( # greedy consists of True or False(exploratory)
+                    self.estimations[states[i + 1]] - self.estimations[state]
+                )
+            else:
+                td_error = self.estimations[states[i + 1]] - self.estimations[state]
             self.estimations[state] += self.step_size * td_error
 
     # choose an action based on the state
@@ -264,6 +275,9 @@ class Player:
         action.append(self.symbol)
         return action
 
+    def give_policy(self):
+        return self.estimations
+
     def save_policy(self):
         with open('policy_%s.bin' % ('first' if self.symbol == 1 else 'second'), 'wb') as f:
             pickle.dump(self.estimations, f)
@@ -283,17 +297,22 @@ p1.set_symbol(1)
 p1.estimations
 
 # %%
+all_states[15890][0].print_state()
+
+
+# %%
 class Judger:
     # @player1: the player who will move first, its chessman will be 1
     # @player2: another player with a chessman -1
-    def __init__(self, player1, player2):
+    # @init_est: inital estimation of probability of winning for tie
+    def __init__(self, player1, player2, init_est=0.5):
         self.p1 = player1
         self.p2 = player2
         self.current_player = None 
         self.p1_symbol = 1
         self.p2_symbol = -1
-        self.p1.set_symbol(self.p1_symbol)
-        self.p2.set_symbol(self.p2_symbol)
+        self.p1.set_symbol(self.p1_symbol, init_est)
+        self.p2.set_symbol(self.p2_symbol, init_est)
         self.current_state = State()
 
     def reset(self):
@@ -327,6 +346,8 @@ class Judger:
                 return current_state.winner
 
 # %%
+
+# %%
 p1 = Player()
 p2 = Player()
 judger = Judger(p1, p2)
@@ -352,7 +373,7 @@ class HumanPlayer:
     def set_state(self, state):
         self.state = state
 
-    def set_symbol(self, symbol):
+    def set_symbol(self, symbol, init_est):
         self.symbol = symbol
 
     def act(self):
@@ -363,13 +384,17 @@ class HumanPlayer:
         j = data % BOARD_COLS
         return i, j, self.symbol
 
-def train(epochs, print_every_n=500):
+# %%
+# @init_est: the initial probablity of winning for tie
+# @exp_included: include exploratory moves in learning
+def train(epochs, print_every_n=500, print_policy=False, init_est=0.5, exp_included=False):
     player1 = Player(epsilon=0.01)
     player2 = Player(epsilon=0.01)
-    judger = Judger(player1, player2)
+    judger = Judger(player1, player2, init_est)
     player1_win = 0.0
     player2_win = 0.0
     for i in range(1, epochs + 1):
+        
         winner = judger.play(print_state=False)
         if winner == 1:
             player1_win += 1
@@ -382,9 +407,12 @@ def train(epochs, print_every_n=500):
         judger.reset()
     player1.save_policy()
     player2.save_policy()
+    if print_policy:
+        pp.pprint(player1.estimations)
+    return (player1.give_policy(), player2.give_policy())
 
 # %%
-train(500)
+train(5000)
 
 # %%
 def compete(turns):
@@ -405,7 +433,7 @@ def compete(turns):
     print('%d turns, player 1 win %02f, player 2 win %.02f' % (turns, player1_win / turns, player2_win / turns))
 
 # %%
-compete(int(500))
+compete(5000)
 
 # %%
 # The game is a zero sum game. If both players are playing with an optimal strategy, every game will end in a tie. 
@@ -425,6 +453,34 @@ def play():
             print("It is a tie!")
 
 # %%
-train(int(1e4))
-compete(int(1e3))
+#train(int(1e4))
+#compete(int(1e3))
 play()
+
+# %% [markdown]
+
+### Let's change inital estimation of probability of winning for tie
+# %% 
+# original
+player1_est_orig = train(int(1e5), init_est=0.5)[0]
+player1_est_zero = train(int(1e5), init_est=0)[0]
+# %%
+est_diff = {}
+for i in player1_est_orig.keys():
+    est_diff[i] = player1_est_orig[i] - player1_est_zero[i]
+
+pp.pprint(est_diff)
+# %% [markdown]
+
+## Let's include exploratory moves into learning
+
+# %%
+player1_est_exp = train(int(1e5), init_est=0.5, exp_included=True)[0]
+
+# %%
+est_diff_exp = {}
+for i in player1_est_orig.keys():
+    est_diff[i] = player1_est_orig[i] - player1_est_exp[i]
+
+pp.pprint(est_diff)
+
