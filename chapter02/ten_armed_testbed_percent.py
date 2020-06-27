@@ -13,8 +13,9 @@ import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 from tqdm import trange
+%matplotlib inline
 
-matplotlib.use('Agg')
+#matplotlib.use('Agg')
 
 # %%
 class Bandit:
@@ -114,7 +115,6 @@ def simulate(runs, time, bandits):
     mean_best_action_counts = best_action_counts.mean(axis=1)
     mean_rewards = rewards.mean(axis=1)
     return mean_best_action_counts, mean_rewards
-
 
 def figure_2_1():
     plt.violinplot(dataset=np.random.randn(200, 10) + np.random.randn(10))
