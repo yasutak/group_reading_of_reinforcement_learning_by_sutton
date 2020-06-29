@@ -266,21 +266,39 @@ def figure_2_6(runs=2000, time=1000):
     plt.show()
     plt.close()
 
+# %% [markdown]
+
+#### example bandit problem from the 10-armed testbed (p28)
 # %%
 figure_2_1()
 
+# %% [markdown]
+
+#### Average performance of epsilon-greedy action-value methods on the 10-armed testbed (p29)
 # %%
 figure_2_2(runs=2000, time=1000)
 
+# %% [markdown]
+
+#### The effect of optimistic initial action-value estimates on the 10-armed testbed
 # %%
 figure_2_3(runs=2000, time=1000)
 
+# %% [markdown]
+
+#### Average performance of UCB action selection on the 10-armed testbed
 # %%
 figure_2_4(runs=2000, time=1000)
 
+# %% [markdown]
+
+#### Average performance of the gradient bandit algorithm with and without a reward baseline
 # %%
 figure_2_5(runs=2000, time=1000)
 
+# %% [markdown]
+
+#### A parameter study of various bandit algorithms
 # %% 
 figure_2_6(runs=2000, time=1000)
 
