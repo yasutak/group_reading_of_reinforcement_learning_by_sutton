@@ -270,7 +270,7 @@ def figure_2_6(runs=2000, time=1000):
 figure_2_1()
 
 # %%
-figure_2_2(runs=2000, time=100)
+figure_2_2(runs=2000, time=1000)
 
 # %%
 figure_2_3(runs=2000, time=1000)
@@ -282,5 +282,5 @@ figure_2_4(runs=2000, time=1000)
 figure_2_5(runs=2000, time=1000)
 
 # %% 
-figure_2_6(runs=2000, time=100)
+figure_2_6(runs=2000, time=1000)
 
