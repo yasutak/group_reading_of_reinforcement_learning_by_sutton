@@ -50,3 +50,42 @@ n-step Bootstrapping p141-158
   
 ### コード　
 - [colab](https://colab.research.google.com/github/yasutak/group_reading_of_reinforcement_learning_by_sutton/blob/master/chapter07/random_walk_percent.ipynb)
+
+## 第10回輪読　8/26(Tue) 13-15
+### 範囲
+first half of chapter08: Planning and Learning with Tabular Methods p159-168
+- models and planning
+- dyna
+
+### 資料
+- [David Silver’s lecture 8](https://www.youtube.com/watch?v=ItMutbeOHtc)
+- [Stanford CS234 Lecture16](https://www.youtube.com/watch?v=vDF1BYWhqL8&list=PLoROMvodv4rOSOPzutgyCTapiGlY2Nd8u&index=15)
+- [Dyna-Q Big Picture](https://www.youtube.com/watch?v=opb7zvnlQ68)
+- [Coursera: Sample-based learning methods](https://www.coursera.org/learn/sample-based-learning-methods)
+  
+### コード　
+- [colab](https://colab.research.google.com/github/yasutak/group_reading_of_reinforcement_learning_by_sutton)
+
+## 第11回輪読　9/8Tue) 13-15
+### 範囲
+chapter08の後半: Planning and Learning with Tabular Methods p168−198
+ Prioritized Sweeping
+ Trajectory Sampling
+ Heuristic Search
+ Rollout Algorithms
+ Monte Carlo Tree Search
+### 資料
+- [David Silver’s lecture 8](https://www.youtube.com/watch?v=ItMutbeOHtc)
+- [Stanford CS234 Lecture16](https://www.youtube.com/watch?v=vDF1BYWhqL8&list=PLoROMvodv4rOSOPzutgyCTapiGlY2Nd8u&index=15)
+- [Coursera: Sample-based learning methods](https://www.coursera.org/learn/sample-based-learning-methods)
+### コード　
+- [colab](https://colab.research.google.com/github/yasutak/group_reading_of_reinforcement_learning_by_sutton)
+
+## 第12回輪読　9/15(Tue) 13-15
+### 範囲
+chapter09の前半: On-policy Prediction with Approximation p195-216
+### 資料
+- [David Silver’s lecture 6](https://youtu.be/UoPei5o4fps)
+- [Stanford CS234 Lecture5](https://youtu.be/buptHUzDKcE)
+### コード　
+- [colab](https://colab.research.google.com/github/yasutak/group_reading_of_reinforcement_learning_by_sutton) 
